@@ -1,26 +1,22 @@
-# Joyage Daily UI Update
+# Joyage Daily 手機白屏修復版
 
-這是根據概念圖重製的 Joyage Daily 介面更新版，使用 React 18 + Vite + Framer Motion + Recharts + localStorage，純前端靜態版。
+## 修復重點
+- 移除高風險 latest dependency
+- 使用穩定 Vite 5 + React Plugin 4
+- 減少手機 Safari 容易白屏的 runtime 依賴
+- 保留概念圖風格、PWA、localStorage、月曆、分析及 IG Story PNG 匯出
 
-## 安裝方法
+## 更新方法
+1. 解壓 ZIP
+2. 用全部檔案覆蓋 GitHub repo
+3. 刪除舊的 `package-lock.json`
+4. 不要上載 `node_modules`
+5. Commit + Push
+6. Vercel 重新 Deploy，選 Clear Build Cache
 
+## 本機測試
 ```bash
 npm install
 npm run dev
-```
-
-## 打包部署
-
-```bash
 npm run build
 ```
-
-把整個專案上載到 GitHub 後，可直接用 Vercel 部署。GitHub Pages 亦可使用 `dist` 資料夾部署。
-
-## 覆蓋更新方法
-
-1. 下載 ZIP 並解壓。
-2. 將所有檔案覆蓋到你現有 Joyage Daily 專案。
-3. 在 VS Code / Terminal 執行 `npm install`。
-4. 執行 `npm run dev` 本機測試。
-5. 無問題後 push 到 GitHub。

@@ -1,1 +1,13 @@
-{"name":"Joyage Daily","short_name":"Joyage","start_url":"/","display":"standalone","background_color":"#fff7ef","theme_color":"#f9b4c8","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+{
+  "name": "Joyage Daily",
+  "short_name": "Joyage",
+  "description": "把每天的情緒，好好記下來。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff7ef",
+  "theme_color": "#fff7ef",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
