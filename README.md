@@ -1,38 +1,26 @@
-# Joyage Daily
+# Joyage Daily UI Update
 
-「把每天的情緒，好好記下來。」純前端情緒記帳本 App。
+這是根據概念圖重製的 Joyage Daily 介面更新版，使用 React 18 + Vite + Framer Motion + Recharts + localStorage，純前端靜態版。
 
-## 功能
-- React 18 + Vite + Tailwind CSS
-- Framer Motion 動畫
-- Recharts 統計圖表
-- localStorage 儲存情緒日記
-- 情緒月曆、補記、編輯
-- IG Story / 分析圖片 PNG 匯出及手機分享
-- PWA：可加入手機主畫面
-- 純前端靜態版，不使用 Firebase / Backend / Database Server
+## 安裝方法
 
-## 本機安裝
 ```bash
 npm install
 npm run dev
 ```
 
-## 建置
+## 打包部署
+
 ```bash
 npm run build
 ```
 
-## Vercel 部署
-1. 將所有檔案上載到 GitHub Repository。
-2. Vercel 新增 Project，選擇該 Repository。
-3. Framework Preset 選 Vite。
-4. Build Command：`npm run build`
-5. Output Directory：`dist`
-6. Deploy。
+把整個專案上載到 GitHub 後，可直接用 Vercel 部署。GitHub Pages 亦可使用 `dist` 資料夾部署。
 
-## GitHub Pages 部署
-```bash
-npm run build
-```
-把 `dist` 內容部署到 GitHub Pages。`vite.config.js` 已使用 `base: './'`，適合 GitHub Pages。
+## 覆蓋更新方法
+
+1. 下載 ZIP 並解壓。
+2. 將所有檔案覆蓋到你現有 Joyage Daily 專案。
+3. 在 VS Code / Terminal 執行 `npm install`。
+4. 執行 `npm run dev` 本機測試。
+5. 無問題後 push 到 GitHub。
