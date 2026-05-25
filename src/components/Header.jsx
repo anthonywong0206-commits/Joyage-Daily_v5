@@ -1,0 +1,1 @@
+export default function Header({title,subtitle}){return <header className="mb-5"><p className="text-sm text-stone-500">Joyage Daily</p><h1 className="text-3xl font-black tracking-tight">{title}</h1>{subtitle&&<p className="text-stone-500 mt-1">{subtitle}</p>}</header>}
