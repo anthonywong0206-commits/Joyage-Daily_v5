@@ -41,22 +41,35 @@ function App(){
     }
   }, [])
 
-  const addRecord = (record) => {
+  const upsertRecord = (record, options = {}) => {
     setRecords(prev => {
+      const old = prev.find(r => r.date === record.date)
       const next = prev.filter(r => r.date !== record.date)
-      return [...next, record].sort((a,b)=>a.date.localeCompare(b.date))
+      const item = {
+        ...old,
+        ...record,
+        createdAt: old?.createdAt || record.createdAt || Date.now(),
+        updatedAt: Date.now()
+      }
+      return [...next, item].sort((a,b)=>a.date.localeCompare(b.date))
     })
-    setToast('今天的情緒已被記下來。')
+    setToast(options.message || '日記紀錄已更新。')
     setTimeout(()=>setToast(''), 2200)
-    setTab('home')
+    if (options.goHome) setTab('home')
+  }
+
+  const deleteRecord = (date) => {
+    setRecords(prev => prev.filter(r => r.date !== date))
+    setToast('日記紀錄已刪除。')
+    setTimeout(()=>setToast(''), 2200)
   }
 
   return <div className="app-shell">
     <div className="ambient a1"/><div className="ambient a2"/><div className="ambient a3"/>
     <main className="phone-frame">
       {tab === 'home' && <Home records={records} go={setTab}/>} 
-      {tab === 'record' && <Record onSave={addRecord} records={records}/>} 
-      {tab === 'diary' && <Diary records={records} onSave={addRecord}/>} 
+      {tab === 'record' && <Record onSave={(record)=>upsertRecord(record, { message: '今天的情緒已被記下來。', goHome: true })} records={records}/>} 
+      {tab === 'diary' && <Diary records={records} onSave={upsertRecord} onDelete={deleteRecord}/>} 
       {tab === 'analytics' && <Analytics records={records}/>} 
     </main>
     <BottomNav tab={tab} setTab={setTab}/>
@@ -132,7 +145,7 @@ function Record({onSave, records}){
   </section>
 }
 
-function Diary({records, onSave}){
+function Diary({records, onSave, onDelete}){
   const now = new Date()
   const [month, setMonth] = useState(new Date(now.getFullYear(), now.getMonth(), 1))
   const [selected, setSelected] = useState(todayKey())
@@ -144,11 +157,60 @@ function Diary({records, onSave}){
       {['日','一','二','三','四','五','六'].map(d=><b className="weekday" key={d}>{d}</b>)}
       {days.map((d,i) => d ? <Day key={d} d={d} records={records} selected={selected} setSelected={setSelected}/> : <span key={'x'+i}/>) }
     </div>
-    <Card title="日記詳情">
-      {rec ? <Detail rec={rec}/> : <Empty text="這一天未有紀錄，可以在記錄頁新增或覆蓋今天紀錄。"/>}
-    </Card>
+    <DiaryEditor selected={selected} rec={rec} onSave={onSave} onDelete={onDelete}/>
     <ShareCard rec={rec}/>
   </section>
+}
+
+function DiaryEditor({selected, rec, onSave, onDelete}){
+  const [editing, setEditing] = useState(!rec)
+  const [emotion, setEmotion] = useState(rec?.emotion || 'joy')
+  const [text, setText] = useState(rec?.text || '')
+
+  useEffect(() => {
+    setEditing(!rec)
+    setEmotion(rec?.emotion || 'joy')
+    setText(rec?.text || '')
+  }, [selected, rec])
+
+  const e = getEmotion(emotion)
+  const save = () => {
+    onSave({
+      date: selected,
+      emotion,
+      text: text.trim(),
+      time: rec?.time || new Date().toLocaleTimeString('zh-HK', {hour:'2-digit', minute:'2-digit'}),
+      updatedTime: new Date().toLocaleTimeString('zh-HK', {hour:'2-digit', minute:'2-digit'})
+    }, { message: rec ? '日記已成功修改。' : '日記已成功新增。' })
+    setEditing(false)
+  }
+  const remove = () => {
+    if (!rec) return
+    const ok = window.confirm(`確定刪除 ${selected} 的日記紀錄？刪除後不能復原。`)
+    if (ok) {
+      onDelete(selected)
+      setEditing(true)
+      setEmotion('joy')
+      setText('')
+    }
+  }
+
+  return <Card title="日記詳情" action={selected}>
+    {!editing && rec ? <>
+      <Detail rec={rec}/>
+      <div className="diary-actions">
+        <button className="edit-btn" onClick={()=>setEditing(true)}>修改日記</button>
+        <button className="delete-btn" onClick={remove}>刪除日記</button>
+      </div>
+    </> : <div className="edit-panel" style={{background:e.soft}}>
+      <div className="edit-date-row"><div><small>{rec ? '正在修改' : '新增日記'}</small><b>{selected}</b></div><span>{e.emoji}</span></div>
+      <div className="mini-emotion-grid">
+        {EMOTIONS.map(item => <button key={item.key} className={emotion===item.key?'picked':''} onClick={()=>setEmotion(item.key)} style={{'--c':item.color,'--s':item.soft}}><span>{item.emoji}</span><small>{item.zh}</small></button>)}
+      </div>
+      <textarea className="edit-textarea" value={text} onChange={ev=>setText(ev.target.value.slice(0,500))} placeholder="這一天發生了什麼事？" />
+      <div className="editor-foot"><small>{text.length}/500</small><div><button className="cancel-btn" onClick={()=>{ if(rec){setEditing(false); setEmotion(rec.emotion); setText(rec.text || '')} }}>取消</button><button className="save-btn" onClick={save}>儲存</button></div></div>
+    </div>}
+  </Card>
 }
 
 function Day({d, records, selected, setSelected}){

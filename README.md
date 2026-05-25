@@ -1,6 +1,11 @@
-# Joyage Daily 手機白屏修復版
+# Joyage Daily 日記查看／修改／刪除修復版
 
 ## 修復重點
+- 日記頁面可點擊日期查看紀錄
+- 可新增指定日期日記
+- 可修改日記內容及情緒
+- 可刪除日記，刪除前有確認提示
+- 修復 localStorage 修改後不同步問題
 - 移除高風險 latest dependency
 - 使用穩定 Vite 5 + React Plugin 4
 - 減少手機 Safari 容易白屏的 runtime 依賴
